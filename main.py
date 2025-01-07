@@ -17,16 +17,16 @@ if user_prompt:
     question = Message(content=user_prompt)
     
     response = client.models.generate_content(
-    model='gemini-2.0-flash-exp',
-    contents=question,
-    config=types.GenerateContentConfig(
-        system_instruction="""Eres un experto de propiedad horizontal en Colombia
-
-    Debes responder a la pregunta del usuario
-    Debes responder con términos de propiedad horizontal en Colombia.
-    . """,
+        model='gemini-2.0-flash-exp',
+        contents=question,
+        config=types.GenerateContentConfig(
+            system_instruction="""Eres un experto de propiedad horizontal en Colombia
+    
+        Debes responder a la pregunta del usuario
+        Debes responder con términos de propiedad horizontal en Colombia.
+        . """,
         temperature= 0.1,
-    ),
-)
+        ),
+    )
 
     st.write(response.text)

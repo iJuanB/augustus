@@ -49,7 +49,6 @@ if user_prompt:
     tasks=[augustus_task(question)],
     verbose=True,
     )
-    }
-)
+  
     response = augustus_crew.kickoff()
     st.write(response.raw)

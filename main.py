@@ -1,41 +1,13 @@
-from crewai_tools import SerperDevTool
-from crewai import Agent, Task, Crew, LLM
-
-from dotenv import load_dotenv
-load_dotenv()
-
-llm = LLM(model="gemini/gemini-2.0-flash-exp", temperature=0.1, google_api_key='AIzaSyAwqzM4PEubbClKu0waIBmSW4RNmevTLz4')
+from google import genai
+from google.genai import types
 
 import streamlit as st
 import os
 
-tool = SerperDevTool(
-    country="col",
-    locale="col",
-    location="Colombia",
-    n_results=2,
-)
+client = genai.Client(api_key='AIzaSyAwqzM4PEubbClKu0waIBmSW4RNmevTLz4')
 
-augustus = Agent(
-    role='Experto en propiedad horizontal',
-    goal='Debes responder preguntas de propiedad horizontal en Colombia',
-    backstory='Eres un experto en propiedad horizontal en Colombia, debes responder de manera precisa. Tu nombre es Augustus',
-    tools=[tool],
-    llm=llm,
-    verbose=True
-)
 
-def augustus_task(prompt): 
-    return Task(
-    description=f"""
-    Eres un experto de propiedad horizontal en Colombia
-
-    Debes responder a la siguiente pregunta del usuario: {prompt}
-    
-    si puedes responder con base a tus conocimientos hazlo, si no tienes los conocimientos entonces usa la herramienta para buscar en internet. """,
-    agent=augustus,
-    expected_output='Respuesta precisa'
-)
+print(response.text)
 
 st.header('Augustus')
 
@@ -44,11 +16,17 @@ user_prompt = st.text_input('Preguntale a Augustus sobre cualquier tema de Propi
 if user_prompt:
     question = Message(content=user_prompt)
     
-    augustus_crew = Crew(
-    agents=[augustus],
-    tasks=[augustus_task(question)],
-    verbose=True,
-    )
-  
-    response = augustus_crew.kickoff()
-    st.write(response.raw)
+    response = client.models.generate_content(
+    model='gemini-2.0-flash-exp',
+    contents=question,
+    config=types.GenerateContentConfig(
+        system_instruction="""Eres un experto de propiedad horizontal en Colombia
+
+    Debes responder a la pregunta del usuario
+    Debes responder con términos de propiedad horizontal en Colombia.
+    . """,
+        temperature= 0.1,
+    ),
+)
+
+    st.write(response.text)

@@ -4,14 +4,10 @@ from crewai import Agent, Task, Crew, LLM
 from dotenv import load_dotenv
 load_dotenv()
 
-llm = LLM(model="gemini/gemini-2.0-flash-exp", temperature=0.1)
+llm = LLM(model="gemini/gemini-2.0-flash-exp", temperature=0.1, google_api_key='AIzaSyAwqzM4PEubbClKu0waIBmSW4RNmevTLz4')
 
 import streamlit as st
 import os
-
-os.environ["GROQ_API_KEY"] = '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'
-os.environ["COHERE_API_KEY"] = 'hgNPboby7mr6AErA1L7CRP7P969JquZZE2XnGKoW'
-os.environ["PINECONE_API_KEY"] = '44c0e7c6-a11c-4c77-aee5-a951e43cd2a1'
 
 tool = SerperDevTool(
     country="col",
@@ -52,13 +48,7 @@ if user_prompt:
     agents=[augustus],
     tasks=[augustus_task(question)],
     verbose=True,
-    memory=True,
-    embedder={
-        "provider": "cohere",
-        "config": {
-            "api_key": "hgNPboby7mr6AErA1L7CRP7P969JquZZE2XnGKoW",
-            "model_name": "embed-multilingual-v3.0"
-        }
+    )
     }
 )
     response = augustus_crew.kickoff()
